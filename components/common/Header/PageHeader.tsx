@@ -18,7 +18,7 @@ const PageHeader = ({
     others,
 }: Props) => {
     return (
-        <div className="flex flex-col gap-4 border-b pb-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
             {/* Left Section */}
             <div className="space-y-3">
                 {previousLink && (
