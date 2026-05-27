@@ -2,7 +2,7 @@ import PageHeader from "@/components/common/Header/PageHeader"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
     return (
         <div>
             <PageHeader
