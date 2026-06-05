@@ -18,7 +18,7 @@ const PageHeader = ({
     others,
 }: Props) => {
     return (
-        <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="sticky top-0 z-50 flex flex-col gap-4 border-b p-4 sm:flex-row sm:items-center sm:justify-between bg-popover/80 rounded-b-2xl backdrop-blur-md shadow-sm">
             {/* Left Section */}
             <div className="space-y-3">
                 {previousLink && (

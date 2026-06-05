@@ -1,9 +1,10 @@
-import { Geist, Geist_Mono, Outfit, Roboto } from "next/font/google"
+import { Geist_Mono, Outfit, Roboto } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
 
 const robotoHeading = Roboto({ subsets: ['latin'], variable: '--font-heading' });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
           <TooltipProvider>
             {children}
           </TooltipProvider>
+          <Toaster position="bottom-right" richColors />
         </ThemeProvider>
       </body>
     </html>

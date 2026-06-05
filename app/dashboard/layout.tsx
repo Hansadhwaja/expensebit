@@ -1,12 +1,12 @@
 
 import DashboardShell from '@/components/dashboard/DashboardShell'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
     return (
-     <DashboardShell>
-        {children}
-     </DashboardShell>
+        <DashboardShell>
+            {children}
+        </DashboardShell>
     )
 }
 

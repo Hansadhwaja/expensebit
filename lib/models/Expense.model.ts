@@ -10,8 +10,7 @@ const expenseSchema = new Schema({
         required: true
     },
     category: {
-        type: Schema.Types.ObjectId,
-        ref: "Category",
+        type: String,
         required: true
     },
     paymentMethod: {
@@ -29,11 +28,9 @@ const expenseSchema = new Schema({
     },
     receiptImage: {
         type: String,
-        required: true
     },
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true,
         index: true
     },

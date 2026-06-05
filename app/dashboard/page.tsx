@@ -1,6 +1,6 @@
 import PageHeader from "@/components/common/Header/PageHeader"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import AddExpenseModal from "@/components/expense/Modal/AddExpenseModal"
+
 
 const DashboardPage = async () => {
     return (
@@ -10,10 +10,7 @@ const DashboardPage = async () => {
                 description="Welcome Back John 👋.Here's your Financial overview."
                 others={
                     <div>
-                        <Button>
-                            <Plus />
-                            Add Expense
-                        </Button>
+                        <AddExpenseModal />
                     </div>
                 }
             />

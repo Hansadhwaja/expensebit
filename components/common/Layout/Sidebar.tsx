@@ -50,8 +50,10 @@ const Sidebar = ({ collapsed }: Props) => {
             <nav className="mt-10 flex flex-1 flex-col gap-2">
                 {navLinks.map((item) => {
                     const isActive =
-                        pathname === item.href ||
-                        pathname.startsWith(`${item.href}/`);
+                        item.href === "/dashboard"
+                            ? pathname === "/dashboard"
+                            : pathname === item.href ||
+                            pathname.startsWith(`${item.href}/`);
 
                     return (
                         <Tooltip key={item.label}>
