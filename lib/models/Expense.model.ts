@@ -1,4 +1,4 @@
-import { model, models, Schema } from "mongoose";
+import { model, models, Schema, Types } from "mongoose";
 
 const expenseSchema = new Schema({
     title: {
@@ -10,7 +10,8 @@ const expenseSchema = new Schema({
         required: true
     },
     category: {
-        type: String,
+        type: Types.ObjectId,
+        ref: "Category",
         required: true
     },
     paymentMethod: {

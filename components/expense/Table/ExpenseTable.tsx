@@ -1,7 +1,6 @@
 import { DataTable } from '@/components/ui/data-table'
 import { columns } from './columns'
-import { Expense } from '@/types/expense.types'
-
+import { Expense } from '@/lib/types/expense.types'
 interface Props {
     expenses: Expense[];
 }

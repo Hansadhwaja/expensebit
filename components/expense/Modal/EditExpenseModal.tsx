@@ -3,25 +3,31 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useState, useTransition } from 'react'
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Edit } from "lucide-react"
 import ExpenseForm from '../Form/ExpenseForm';
 import { ExpenseFormValues } from '@/lib/schemas/expense.schemas';
-import { addExpenseAction } from '@/lib/actions/expense.actions';
+import { editExpenseAction } from '@/lib/actions/expense.actions';
 import { toast } from 'sonner';
-import { Category } from '@/lib/types/category.types';
+import { Expense } from '@/lib/types/expense.types';
+import { useExpenseContext } from '@/features/context/ExpenseContext';
 
 interface Props {
-    categories: Category[];
+    expense: Expense;
 }
 
-const AddExpenseModal = ({ categories }: Props) => {
+const EditExpenseModal = ({ expense }: Props) => {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
+
+    const { categories } = useExpenseContext();
 
     const handleSubmit = (data: ExpenseFormValues) => {
         startTransition(async () => {
             try {
-                const response = await addExpenseAction(data);
+                const response = await editExpenseAction({
+                    expenseId: expense._id,
+                    data
+                });
 
                 if (!response.success) {
                     toast.error(response.message);
@@ -29,10 +35,10 @@ const AddExpenseModal = ({ categories }: Props) => {
                 }
 
                 setOpen(false);
-                toast.success(response.message ?? "Expense added Successfully");
+                toast.success(response.message ?? "Expense edited Successfully");
             } catch (error) {
                 console.log(error);
-                toast.error("Error while adding expense");
+                toast.error("Error while editing expense");
             }
         })
     };
@@ -40,9 +46,9 @@ const AddExpenseModal = ({ categories }: Props) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    <Plus />
-                    Add Expense
+                <Button variant="ghost" className='w-full text-blue-500'>
+                    <Edit />
+                    Edit
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[95vh] overflow-y-auto">
@@ -53,13 +59,14 @@ const AddExpenseModal = ({ categories }: Props) => {
                     </DialogDescription>
                 </DialogHeader>
                 <ExpenseForm
-                    categories={categories}
+                    initialData={expense}
                     onSubmit={handleSubmit}
                     isLoading={isPending}
+                    categories={categories}
                 />
             </DialogContent>
         </Dialog>
     )
 }
 
-export default AddExpenseModal
+export default EditExpenseModal

@@ -19,3 +19,12 @@ export const formatDate = (date: string | Date) => {
     year: 'numeric'
   }).format(new Date(date))
 }
+
+export const formatDateInput = (date: string | Date) => {
+  const val = date ? new Date(date) : new Date();
+
+  if (isNaN(val.getTime())) {
+    return new Date().toISOString().split("T")[0]
+  }
+  return val.toISOString().split("T")[0]
+}

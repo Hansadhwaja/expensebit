@@ -1,3 +1,4 @@
+import { Category } from "./category.types";
 
 
 export type PaymentMethod =
@@ -10,7 +11,7 @@ export type Expense = {
     _id: string;
     title: string;
     amount: number;
-    category: string;
+    category: Category;
     paymentMethod: PaymentMethod;
     date: string;
     note?: string | undefined;

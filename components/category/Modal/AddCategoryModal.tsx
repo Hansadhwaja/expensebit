@@ -4,24 +4,19 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState, useTransition } from 'react'
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
-import ExpenseForm from '../Form/ExpenseForm';
-import { ExpenseFormValues } from '@/lib/schemas/expense.schemas';
-import { addExpenseAction } from '@/lib/actions/expense.actions';
+import CategoryForm from '../Form/CategoryForm';
+import { CategoryFormValues } from '@/lib/schemas/category.schemas';
+import { addCategoryAction } from '@/lib/actions/category.actions';
 import { toast } from 'sonner';
-import { Category } from '@/lib/types/category.types';
 
-interface Props {
-    categories: Category[];
-}
-
-const AddExpenseModal = ({ categories }: Props) => {
+const AddCategoryModal = () => {
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    const handleSubmit = (data: ExpenseFormValues) => {
+    const handleSubmit = (data: CategoryFormValues) => {
         startTransition(async () => {
             try {
-                const response = await addExpenseAction(data);
+                const response = await addCategoryAction(data);
 
                 if (!response.success) {
                     toast.error(response.message);
@@ -29,10 +24,10 @@ const AddExpenseModal = ({ categories }: Props) => {
                 }
 
                 setOpen(false);
-                toast.success(response.message ?? "Expense added Successfully");
+                toast.success(response.message ?? "Category added Successfully");
             } catch (error) {
                 console.log(error);
-                toast.error("Error while adding expense");
+                toast.error("Error while adding Category");
             }
         })
     };
@@ -42,18 +37,17 @@ const AddExpenseModal = ({ categories }: Props) => {
             <DialogTrigger asChild>
                 <Button>
                     <Plus />
-                    Add Expense
+                    Add Category
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[95vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Add New Expense</DialogTitle>
+                    <DialogTitle>Add New Category</DialogTitle>
                     <DialogDescription>
-                        Track business expenses and maintain accurate financial records.
+                        Create and organize categories to better track and manage your expenses.
                     </DialogDescription>
                 </DialogHeader>
-                <ExpenseForm
-                    categories={categories}
+                <CategoryForm
                     onSubmit={handleSubmit}
                     isLoading={isPending}
                 />
@@ -62,4 +56,4 @@ const AddExpenseModal = ({ categories }: Props) => {
     )
 }
 
-export default AddExpenseModal
+export default AddCategoryModal

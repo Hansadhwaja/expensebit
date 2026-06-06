@@ -3,7 +3,7 @@
 import connectDB from "../db";
 import Expense from "../models/Expense.model";
 import { ExpenseFormValues } from "../schemas/expense.schemas";
-import { Expense as ExpenseType } from "@/types/expense.types";
+import { Expense as ExpenseType } from "@/lib/types/expense.types";
 
 
 export async function createExpenseService(
@@ -22,7 +22,7 @@ export async function createExpenseService(
         };
     } catch (error) {
         console.log("[CREATE_EXPENSE_SERVICE]", error);
-        throw new Error("Error creating Expense")
+        throw new Error(error instanceof Error ? error.message : "Error creating Expense")
     }
 }
 
@@ -31,6 +31,7 @@ export async function getExpensesService(): Promise<ExpenseType[]> {
         await connectDB();
         const expenses = await Expense
             .find({})
+            .populate("category", "name color icon")
             .sort({ date: -1 })
             .lean();
 
@@ -41,11 +42,53 @@ export async function getExpensesService(): Promise<ExpenseType[]> {
         return expenses.map(e => ({
             ...e,
             _id: e._id.toString(),
+            category: {
+                ...e.category,
+                _id: e.category._id.toString()
+            }
         }))
 
 
     } catch (error) {
         console.log("[GET_EXPENSES_SERVICE]", error);
-        throw new Error('Error while fetching all expenses')
+        throw new Error(error instanceof Error ? error.message : 'Error while fetching all expenses')
+    }
+}
+
+export async function editExpenseService({
+    data,
+    expenseId
+}: {
+    data: ExpenseFormValues & { userId: string },
+    expenseId: string
+}): Promise<void> {
+    try {
+
+        await connectDB();
+        const updatedExpense = await Expense.findByIdAndUpdate(expenseId, data, {
+            new: true,
+            runValidators: true
+        });
+        if (!updatedExpense) {
+            throw new Error("Expense Not Found")
+        }
+    } catch (error) {
+        console.log("[EDIT_EXPENSE_SERVICE]", error);
+        throw new Error(error instanceof Error ? error.message : "Error while editing Expense")
+    }
+}
+
+export async function deleteExpenseService(
+    expenseId: string
+): Promise<void> {
+    try {
+        await connectDB();
+        const deletedExpense = await Expense.findByIdAndDelete(expenseId);
+        if (!deletedExpense) {
+            throw new Error("Expense Not Found")
+        }
+    } catch (error) {
+        console.log("[DELETE_EXPENSE_SERVICE]", error);
+        throw new Error(error instanceof Error ? error.message : "Error while deleting Expense")
     }
 }

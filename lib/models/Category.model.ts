@@ -16,10 +16,9 @@ const categorySchema = new Schema({
         required: true
     },
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true,
-        index:true
+        index: true
     }
 }, { timestamps: true, versionKey: false });
 
