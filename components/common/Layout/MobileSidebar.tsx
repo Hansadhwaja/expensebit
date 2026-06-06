@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import {
     Sheet,
     SheetContent,
+    SheetDescription,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
@@ -39,29 +40,31 @@ const MobileSidebar = () => {
             >
                 {/* Header */}
                 <SheetHeader className="border-b px-6 py-5">
-                    <SheetTitle className="flex items-center gap-3 text-left">
+                    <div className="flex items-center gap-3 text-left">
                         <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
                             <Wallet size={22} />
                         </div>
 
                         <div className="flex flex-col">
-                            <span className="text-lg font-bold tracking-tight">
+                            <SheetTitle className="text-lg font-bold tracking-tight">
                                 Expense Tracker
-                            </span>
+                            </SheetTitle>
 
-                            <span className="text-xs font-normal text-muted-foreground">
+                            <SheetDescription className="text-xs font-normal text-muted-foreground">
                                 Personal Finance Dashboard
-                            </span>
+                            </SheetDescription>
                         </div>
-                    </SheetTitle>
+                    </div>
                 </SheetHeader>
 
                 {/* Navigation */}
                 <nav className="flex flex-col gap-2 p-4">
                     {navLinks.map((item) => {
                         const isActive =
-                            pathname === item.href ||
-                            pathname.startsWith(`${item.href}/`);
+                            item.href === "/dashboard"
+                                ? pathname === "/dashboard"
+                                : pathname === item.href ||
+                                pathname.startsWith(`${item.href}/`);
 
                         return (
                             <Link

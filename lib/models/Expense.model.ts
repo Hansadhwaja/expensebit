@@ -1,4 +1,4 @@
-import { model, models, Schema } from "mongoose";
+import { model, models, Schema, Types } from "mongoose";
 
 const expenseSchema = new Schema({
     title: {
@@ -10,7 +10,7 @@ const expenseSchema = new Schema({
         required: true
     },
     category: {
-        type: Schema.Types.ObjectId,
+        type: Types.ObjectId,
         ref: "Category",
         required: true
     },
@@ -29,11 +29,9 @@ const expenseSchema = new Schema({
     },
     receiptImage: {
         type: String,
-        required: true
     },
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true,
         index: true
     },
