@@ -42,10 +42,10 @@ export async function getExpensesService(): Promise<ExpenseType[]> {
         return expenses.map(e => ({
             ...e,
             _id: e._id.toString(),
-            category: {
+            category: e.category ? {
                 ...e.category,
                 _id: e.category._id.toString()
-            }
+            } : null
         }))
 
 
@@ -91,4 +91,112 @@ export async function deleteExpenseService(
         console.log("[DELETE_EXPENSE_SERVICE]", error);
         throw new Error(error instanceof Error ? error.message : "Error while deleting Expense")
     }
+}
+
+export async function getTotalExpense(userId: string): Promise<number> {
+    await connectDB();
+
+    const result = await Expense.aggregate([
+        {
+            $match: {
+                userId
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$amount"
+                }
+            }
+        }
+    ]);
+
+    return result[0]?.total ?? 0;
+}
+
+export async function getCurrentMonthExpenses(userId: string): Promise<number> {
+    await connectDB();
+    const date = new Date();
+
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const startOfNextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+
+    const result = await Expense.aggregate([
+        {
+            $match: {
+                userId,
+                date: {
+                    $gte: startOfMonth,
+                    $lt: startOfNextMonth
+                }
+            },
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$amount"
+                }
+            }
+        }
+    ]);
+
+    return result[0]?.total ?? 0;
+}
+
+export async function getTodayExpenses(userId: string): Promise<number> {
+    await connectDB();
+
+    const date = new Date();
+
+    const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const startOfNextDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+
+    const result = await Expense.aggregate([
+        {
+            $match: {
+                userId,
+                date: {
+                    $gte: startOfDay,
+                    $lt: startOfNextDay
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {
+                    $sum: "$amount"
+                }
+            }
+        }
+    ]);
+
+    return result[0]?.total ?? 0;
+}
+
+export async function getRecentExpenses({
+    userId,
+    limit = 10
+}: {
+    userId: string,
+    limit: number
+}): Promise<ExpenseType[]> {
+    await connectDB();
+    const expenses = await Expense
+        .find({ userId })
+        .populate("category", "name color icon")
+        .sort({ date: -1 })
+        .limit(limit)
+        .lean();
+
+    return expenses.map(expense => ({
+        ...expense,
+        _id: expense._id.toString(),
+        category: expense.category ? {
+            ...expense.category,
+            _id: expense.category._id.toString()
+        } : null
+    }));
 }

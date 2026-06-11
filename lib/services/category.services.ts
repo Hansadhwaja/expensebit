@@ -87,3 +87,9 @@ export async function deleteCategoryService(
         throw new Error(error instanceof Error ? error.message : "Error while deleting Category")
     }
 }
+
+export async function getTotalCategories(): Promise<number> {
+    await connectDB();
+
+    return await Category.countDocuments();
+}
