@@ -2,6 +2,7 @@ import PageHeader from "@/components/common/Header/PageHeader"
 import ExpenseFilters from "@/components/expense/Filters/ExpenseFilters"
 import AddExpenseModal from "@/components/expense/Modal/AddExpenseModal"
 import ExpenseTable from "@/components/expense/Table/ExpenseTable"
+import { sortOptions } from "@/constants"
 import { ExpenseProvider } from "@/features/context/ExpenseProvider"
 import { getCategoriesAction } from "@/lib/actions/category.actions"
 import { getExpensesAction } from "@/lib/actions/expense.actions"
@@ -15,6 +16,7 @@ interface Props {
     endDate?: string
     startDate?: string
     search?: string
+    sort: string
   }>
 }
 
@@ -28,6 +30,7 @@ const ExpensesPage = async ({ searchParams }: Props) => {
   const startDate = params.startDate
   const endDate = params.endDate
   const search = params.search
+  const sort = params.sort ?? sortOptions[0].value
 
   const filters = {
     page,
@@ -37,6 +40,7 @@ const ExpensesPage = async ({ searchParams }: Props) => {
     startDate,
     endDate,
     search,
+    sort,
   }
 
   const [expenseResponse, categoriesResponse] = await Promise.all([

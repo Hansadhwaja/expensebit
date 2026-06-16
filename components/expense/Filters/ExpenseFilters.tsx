@@ -2,7 +2,6 @@
 
 import CategoryFilters from "./CategoryFilters"
 import { Filter, X } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Category } from "@/lib/types/category.types"
 import { Button } from "@/components/ui/button"
@@ -11,6 +10,7 @@ import PaymentFilters from "./PaymentFilters"
 import DateRangeFilters from "./DateRangeFilters"
 import { Separator } from "@/components/ui/separator"
 import SearchFilters from "@/components/common/Filter/SearchFilters"
+import SortFilters from "./SortFilters"
 
 interface Props {
   categories: Category[]
@@ -35,6 +35,7 @@ const ExpenseFilters = ({ categories }: Props) => {
         <CategoryFilters categories={categories ?? []} />
         <PaymentFilters />
         <DateRangeFilters />
+        <SortFilters />
         <Button onClick={handleReset} variant="outline">
           <X />
           Reset

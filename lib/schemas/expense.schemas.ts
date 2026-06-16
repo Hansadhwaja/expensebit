@@ -1,3 +1,4 @@
+import { sortOptions } from "@/constants"
 import { z } from "zod"
 
 export const expenseSchema = z.object({
@@ -15,6 +16,9 @@ export const expenseSchema = z.object({
 
 export type ExpenseFormValues = z.infer<typeof expenseSchema>
 
+export type SortOption = (typeof sortOptions)[number]["value"]
+const sortValues = sortOptions.map((s) => s.value) as [string, ...string[]]
+
 export const expenseQuerySchema = z
   .object({
     page: z.coerce.number().min(1).default(1),
@@ -24,6 +28,7 @@ export const expenseQuerySchema = z
     payment: z.string().optional(),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
+    sort: z.enum(sortValues).default("latest"),
   })
   .refine(
     (data) =>
