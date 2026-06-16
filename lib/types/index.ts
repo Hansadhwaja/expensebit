@@ -4,3 +4,10 @@ export type ActionResponse<T = null> = {
     message: string;
     data?: T;
 };
+
+export type Pagination = {
+    page: number,
+    limit: number,
+    totalPages: number,
+    totalCount: number
+}
