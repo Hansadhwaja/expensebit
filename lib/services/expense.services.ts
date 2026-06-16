@@ -6,6 +6,17 @@ import { ExpenseFormValues, ExpenseQueryType } from "../schemas/expense.schemas"
 import { ExpenseQuery, Expense as ExpenseType } from "@/lib/types/expense.types"
 import { Pagination } from "../types"
 
+import { SortOrder } from "mongoose"
+
+const sortMap: Record<string, Record<string, SortOrder>> = {
+  latest: { date: -1 },
+  oldest: { date: 1 },
+  amount_desc: { amount: -1 },
+  amount_asc: { amount: 1 },
+}
+
+const getSortOption = (sort: string) => sortMap[sort] ?? sortMap.latest
+
 export async function createExpenseService(
   data: ExpenseFormValues & { userId: string }
 ): Promise<{ id: string }> {
@@ -35,6 +46,7 @@ export async function getExpensesService({
   payment,
   startDate,
   endDate,
+  sort,
   userId,
 }: ExpenseQueryType & {
   userId: string
@@ -73,10 +85,12 @@ export async function getExpensesService({
       }
     }
 
+    const sortOption = getSortOption(sort)
+
     const [expenses, totalCount] = await Promise.all([
       Expense.find(query)
         .populate("category", "name color icon")
-        .sort({ date: -1 })
+        .sort(sortOption)
         .skip(skip)
         .limit(limit)
         .lean(),
