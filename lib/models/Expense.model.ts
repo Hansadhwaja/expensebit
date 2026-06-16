@@ -1,6 +1,19 @@
-import { model, models, Schema, Types } from "mongoose";
+import { Document, model, models, Schema, Types } from "mongoose";
 
-const expenseSchema = new Schema({
+export interface IExpense extends Document {
+    title: string;
+    amount: number;
+    category: Types.ObjectId;
+    paymentMethod: "cash" | "upi" | "card" | "bank" | "other";
+    note?: string;
+    date: Date;
+    receiptImage?: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const expenseSchema = new Schema<IExpense>({
     title: {
         type: String,
         required: true
@@ -37,6 +50,6 @@ const expenseSchema = new Schema({
     },
 }, { timestamps: true, versionKey: false });
 
-const Expense = models.Expense || model("Expense", expenseSchema);
+const Expense = models.Expense || model<IExpense>("Expense", expenseSchema);
 
 export default Expense;

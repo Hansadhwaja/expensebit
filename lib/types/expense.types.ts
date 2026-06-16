@@ -7,6 +7,7 @@ export type PaymentMethod =
     | "card"
     | "bank"
     | "other";
+
 export type Expense = {
     _id: string;
     title: string;
@@ -17,3 +18,16 @@ export type Expense = {
     note?: string | undefined;
     receiptImage?: string | undefined;
 }
+
+export type ExpenseQuery = {
+    userId: string;
+    title?: {
+        $regex: string;
+        $options: string;
+    };
+    category?: string;
+    date?: {
+        $gte?: Date;
+        $lte?: Date;
+    };
+};

@@ -11,3 +11,11 @@ export const expenseSchema = z.object({
 });
 
 export type ExpenseFormValues = z.infer<typeof expenseSchema>;
+
+export const expenseQuerySchema = z.object({
+    page: z.coerce.number().min(1).default(1),
+    limit: z.coerce.number().min(1).max(100).default(10),
+    search: z.string().optional(),
+});
+
+export type ExpenseQueryType = z.infer<typeof expenseQuerySchema>;

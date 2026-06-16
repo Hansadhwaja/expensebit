@@ -2,9 +2,9 @@
 
 import connectDB from "../db";
 import Expense from "../models/Expense.model";
-import { ExpenseFormValues } from "../schemas/expense.schemas";
-import { Expense as ExpenseType } from "@/lib/types/expense.types";
-
+import { ExpenseFormValues, ExpenseQueryType } from "../schemas/expense.schemas";
+import { ExpenseQuery, Expense as ExpenseType } from "@/lib/types/expense.types";
+import { Pagination } from "../types";
 
 export async function createExpenseService(
     data: ExpenseFormValues & { userId: string }
@@ -26,27 +26,74 @@ export async function createExpenseService(
     }
 }
 
-export async function getExpensesService(): Promise<ExpenseType[]> {
+export async function getExpensesService({
+    page,
+    limit,
+    search,
+    userId
+}: ExpenseQueryType & {
+    userId: string
+}): Promise<{ expenses: ExpenseType[], pagination: Pagination }> {
     try {
         await connectDB();
-        const expenses = await Expense
-            .find({})
-            .populate("category", "name color icon")
-            .sort({ date: -1 })
-            .lean();
 
-        if (!expenses) {
-            throw new Error("Failed to fetch expenses");
+        const skip = (page - 1) * limit;
+        const query: ExpenseQuery = {
+            userId
+        };
+
+        if (search?.trim()) {
+            query.title = {
+                $regex: search,
+                $options: "i"
+            }
         }
 
-        return expenses.map(e => ({
-            ...e,
-            _id: e._id.toString(),
-            category: {
-                ...e.category,
-                _id: e.category._id.toString()
+        // if (category) {
+        //     query.category = category
+        // }
+
+        // if (from || to) {
+        //     query.date = {}
+        //     if (from) {
+        //         query.date.$gte = new Date(from)
+        //     }
+
+        //     if (to) {
+        //         query.date.$lt = new Date(to)
+        //     }
+        // }
+
+        const [expenses, totalCount] = await Promise.all([
+            Expense
+                .find(query)
+                .populate("category", "name color icon")
+                .sort({ date: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            Expense.countDocuments({
+                userId
+            })
+        ]);
+
+
+        return {
+            expenses: expenses.map(e => ({
+                ...e,
+                _id: e._id.toString(),
+                category: e.category ? {
+                    ...e.category,
+                    _id: e.category._id.toString()
+                } : null
+            })),
+            pagination: {
+                page,
+                limit,
+                totalPages: Math.ceil(totalCount / limit),
+                totalCount
             }
-        }))
+        }
 
 
     } catch (error) {
