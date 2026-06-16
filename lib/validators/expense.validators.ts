@@ -5,6 +5,6 @@ export function validateExpense(data: ExpenseFormValues) {
     return expenseSchema.safeParse(data);
 }
 
-export function validateExpensePaginationType(data: ExpenseQueryType) {
+export function validateExpenseQueryType(data: ExpenseQueryType) {
     return expenseQuerySchema.safeParse(data)
 }

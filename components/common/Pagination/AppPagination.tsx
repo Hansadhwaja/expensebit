@@ -60,7 +60,7 @@ export default function AppPagination({
           <p className="text-sm font-medium">Rows per page</p>
 
           <Select value={String(limit)} onValueChange={updateLimit}>
-            <SelectTrigger className="h-8 w-[80px]">
+            <SelectTrigger className="h-8 w-20">
               <SelectValue />
             </SelectTrigger>
 

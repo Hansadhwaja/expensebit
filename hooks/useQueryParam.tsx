@@ -21,7 +21,7 @@ export function useQueryParam() {
 
       params.set(key, value)
 
-      router.push(`${pathname}?${params.toString()}`)
+      router.replace(`${pathname}?${params.toString()}`)
     },
     [router, pathname, searchParams]
   )
@@ -38,7 +38,7 @@ export function useQueryParam() {
         }
       })
 
-      router.push(`${pathname}?${params.toString()}`)
+      router.replace(`${pathname}?${params.toString()}`)
     },
     [router, pathname, searchParams]
   )
@@ -49,13 +49,13 @@ export function useQueryParam() {
 
       params.delete(key)
 
-      router.push(`${pathname}?${params.toString()}`)
+      router.replace(`${pathname}?${params.toString()}`)
     },
     [router, pathname, searchParams]
   )
 
   const clearParams = useCallback(() => {
-    router.push(pathname)
+    router.replace(pathname)
   }, [router, pathname])
 
   return {
