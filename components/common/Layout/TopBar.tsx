@@ -28,9 +28,6 @@ const TopBar = ({ toggleSidebar }: Props) => {
 
       {/* Right */}
       <div className="flex items-center gap-3">
-        {/* Search */}
-        <SearchFilters />
-
         {/* Notifications */}
         <Button size="icon" variant="outline" className="relative rounded-xl">
           <Bell size={18} />

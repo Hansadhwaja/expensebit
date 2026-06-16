@@ -5,17 +5,19 @@ import AppPagination from "@/components/common/Pagination/AppPagination"
 import { Pagination } from "@/lib/types"
 interface Props {
   expenses: Expense[]
-  pagination: Pagination
+  pagination?: Pagination
 }
 
 const ExpenseTable = ({ expenses = [], pagination }: Props) => {
   return (
     <div>
       <DataTable columns={columns} data={expenses} />
-      <AppPagination
-        totalPages={pagination.totalPages}
-        totalCount={pagination.totalCount}
-      />
+      {pagination && (
+        <AppPagination
+          totalPages={pagination?.totalPages}
+          totalCount={pagination?.totalCount}
+        />
+      )}
     </div>
   )
 }

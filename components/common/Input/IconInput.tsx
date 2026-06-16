@@ -15,7 +15,7 @@ const IconInput = ({
   onChange,
 }: Props) => {
   return (
-    <div className="relative hidden lg:block">
+    <div className="relative">
       <Icon
         size={16}
         className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
@@ -23,7 +23,7 @@ const IconInput = ({
 
       <Input
         placeholder={placeholder}
-        className="w-72 rounded-xl pl-9 xl:w-80"
+        className="rounded-xl pl-9"
         defaultValue={defaultValue}
         onChange={(e) => onChange(e.target.value)}
       />

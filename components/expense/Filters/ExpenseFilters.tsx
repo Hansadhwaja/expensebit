@@ -10,6 +10,7 @@ import { useQueryParam } from "@/hooks/useQueryParam"
 import PaymentFilters from "./PaymentFilters"
 import DateRangeFilters from "./DateRangeFilters"
 import { Separator } from "@/components/ui/separator"
+import SearchFilters from "@/components/common/Filter/SearchFilters"
 
 interface Props {
   categories: Category[]
@@ -30,7 +31,7 @@ const ExpenseFilters = ({ categories }: Props) => {
         </div>
 
         <Separator orientation="vertical" />
-
+        <SearchFilters />
         <CategoryFilters categories={categories ?? []} />
         <PaymentFilters />
         <DateRangeFilters />
