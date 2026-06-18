@@ -279,3 +279,64 @@ export const sortOptions = [
     value: "amount_asc",
   },
 ] as const
+
+export const groupByOptions = [
+  {
+    label: "Day",
+    value: "day",
+  },
+  {
+    label: "Week",
+    value: "week",
+  },
+  {
+    label: "Month",
+    value: "month",
+  },
+] as const
+
+export const PERIODS = [
+  {
+    label: "Today",
+    value: "today",
+  },
+  {
+    label: "Yesterday",
+    value: "yesterday",
+  },
+  {
+    label: "Last 7 Days",
+    value: "7d",
+  },
+  {
+    label: "Last 30 Days",
+    value: "30d",
+  },
+  {
+    label: "This Month",
+    value: "month",
+  },
+  {
+    label: "This Year",
+    value: "year",
+  },
+]
+
+export const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+]
+
+export const WeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+

@@ -7,6 +7,14 @@ import { ExpenseQuery, Expense as ExpenseType } from "@/lib/types/expense.types"
 import { Pagination } from "../types"
 
 import { SortOrder } from "mongoose"
+import {
+  CategoryData,
+  PaymentData,
+  SpendingData,
+  TransactionData,
+} from "../types/analytics.types"
+import { getDateRange } from "../utils"
+import { MONTHS, WeekDays } from "@/constants"
 
 const sortMap: Record<string, Record<string, SortOrder>> = {
   latest: { date: -1 },
@@ -166,6 +174,7 @@ export async function deleteExpenseService(expenseId: string): Promise<void> {
   }
 }
 
+//Dashboard and Analytics
 export async function getTotalExpense(userId: string): Promise<number> {
   await connectDB()
 
@@ -281,4 +290,306 @@ export async function getRecentExpenses({
         }
       : null,
   }))
+}
+
+export async function getDailyExpenses({
+  startDate,
+  endDate,
+  userId,
+}: {
+  startDate: string
+  endDate: string
+  userId: string
+}): Promise<SpendingData[]> {
+  await connectDB()
+  const { startRange, endRange } = getDateRange(startDate, endDate)
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+        date: {
+          $gte: startRange,
+          $lte: endRange,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$date",
+          },
+        },
+        amount: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        label: "$_id",
+        amount: 1,
+      },
+    },
+  ])
+
+  return result
+}
+
+export async function getWeeklyExpenses({
+  startDate,
+  endDate,
+  userId,
+}: {
+  startDate: string
+  endDate: string
+  userId: string
+}): Promise<SpendingData[]> {
+  await connectDB()
+  const { startRange, endRange } = getDateRange(startDate, endDate)
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+        date: {
+          $gte: startRange,
+          $lte: endRange,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: {
+            $isoWeekYear: "$date",
+          },
+          week: {
+            $isoWeek: "$date",
+          },
+        },
+        amount: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $sort: {
+        "_id.year": 1,
+        "_id.week": 1,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        label: {
+          $concat: [
+            "Week ",
+            {
+              $toString: "$_id.week",
+            },
+            ", ",
+            {
+              $toString: "$_id.year",
+            },
+          ],
+        },
+        amount: 1,
+      },
+    },
+  ])
+
+  return result
+}
+
+export async function getMonthlyExpenses({
+  startDate,
+  endDate,
+  userId,
+}: {
+  startDate: string
+  endDate: string
+  userId: string
+}): Promise<SpendingData[]> {
+  await connectDB()
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+
+  const startRange = new Date(start.getFullYear(), start.getMonth(), 1)
+  const endRange = new Date(end.getFullYear(), end.getMonth() + 1, 1)
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+        date: {
+          $gte: startRange,
+          $lte: endRange,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$date" },
+          month: { $month: "$date" },
+        },
+        amount: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $sort: { "_id.year": 1, "_id:month": 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        year: "$_id.year",
+        amount: 1,
+      },
+    },
+  ])
+
+  const monthlyExpenses = result.map((item) => ({
+    label: `${MONTHS[item.month - 1]} ${item.year}`,
+    amount: item.amount,
+  }))
+
+  return monthlyExpenses
+}
+
+export async function getPaymentMethodWiseExpenses(
+  userId: string
+): Promise<PaymentData[]> {
+  await connectDB()
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+      },
+    },
+    {
+      $group: {
+        _id: "$paymentMethod",
+        amount: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        method: "$_id",
+        amount: 1,
+      },
+    },
+  ])
+
+  return result.map((item) => ({
+    ...item,
+    method: item.method.toUpperCase(),
+  }))
+}
+
+export async function getCategoryWiseExpenses(
+  userId: string
+): Promise<CategoryData[]> {
+  await connectDB()
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+      },
+    },
+    {
+      $group: {
+        _id: "$category",
+        amount: {
+          $sum: "$amount",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "_id",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: "$category",
+    },
+    {
+      $project: {
+        _id: 0,
+        category: "$category.name",
+        amount: 1,
+      },
+    },
+  ])
+
+  return result
+}
+
+export async function getTotalExpensesByWeekDays({
+  startDate,
+  endDate,
+  userId,
+}: {
+  startDate: string
+  endDate: string
+  userId: string
+}): Promise<TransactionData[]> {
+  await connectDB()
+  const { startRange, endRange } = getDateRange(startDate, endDate)
+
+  const result = await Expense.aggregate([
+    {
+      $match: {
+        userId,
+        date: {
+          $gte: startRange,
+          $lte: endRange,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dayOfWeek: "$date",
+        },
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        day: "$_id",
+        count: 1,
+      },
+    },
+  ])
+
+  const transactionFrequencyData = result.map((item) => ({
+    day: WeekDays[item.day - 1],
+    count: item.count,
+  }))
+
+  return transactionFrequencyData
 }
