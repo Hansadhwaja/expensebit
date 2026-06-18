@@ -67,8 +67,7 @@ export async function getExpensesAction(
       return {
         success: false,
         message:
-          validatedPagination.error.issues[0].message ??
-          "Invalid Pagination Data",
+          validatedPagination.error.issues[0].message ?? "Invalid Query Data",
       }
     }
 

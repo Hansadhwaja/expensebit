@@ -24,7 +24,7 @@ const DateRangeFilters = () => {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <Input
         type="date"
         value={startDate ?? ""}

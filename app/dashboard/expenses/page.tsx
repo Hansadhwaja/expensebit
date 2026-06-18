@@ -1,5 +1,5 @@
 import PageHeader from "@/components/common/Header/PageHeader"
-import ExpenseFilters from "@/components/expense/Filters/ExpenseFilters"
+import ExpenseFilters from "@/components/expense/Filters"
 import AddExpenseModal from "@/components/expense/Modal/AddExpenseModal"
 import ExpenseTable from "@/components/expense/Table/ExpenseTable"
 import { sortOptions } from "@/constants"
