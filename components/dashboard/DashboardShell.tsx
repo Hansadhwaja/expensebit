@@ -7,8 +7,10 @@ import TopBar from "@/components/common/Layout/TopBar";
 
 const DashboardShell = ({
     children,
+    userName
 }: {
     children: ReactNode;
+    userName:string
 }) => {
     const [collapsed, setCollapsed] = useState(false);
 
@@ -24,7 +26,7 @@ const DashboardShell = ({
             {/* Right Section */}
             <div className="flex min-w-0 flex-1 flex-col">
                 {/* Topbar */}
-                <TopBar toggleSidebar={toggleSidebar} />
+                <TopBar toggleSidebar={toggleSidebar} userName={userName} />
 
                 {/* Scrollable Content */}
                 <main className="flex-1 overflow-y-auto p-6">
