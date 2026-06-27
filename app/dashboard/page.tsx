@@ -5,12 +5,16 @@ import AddExpenseModal from "@/components/expense/Modal/AddExpenseModal"
 import ExpenseTable from "@/components/expense/Table/ExpenseTable"
 import { getCategoriesAction } from "@/lib/actions/category.actions"
 import { getDashboardSummaryAction } from "@/lib/actions/dashboard.actions"
+import { getCurrentSession } from "@/lib/utils/auth/session"
 
 const DashboardPage = async () => {
   const [categoriesResponse, dashboardResponse] = await Promise.all([
     getCategoriesAction(),
     getDashboardSummaryAction(),
   ])
+
+  const sessionData = await getCurrentSession()
+  const user = sessionData?.user
 
   const categories = categoriesResponse.data?.categories ?? []
   const dashboard = dashboardResponse?.data?.summary
@@ -19,7 +23,7 @@ const DashboardPage = async () => {
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
-        description="Welcome Back John 👋.Here's your Financial overview."
+        description={`Welcome Back ${user?.name ?? "Guest User"} 👋.Here's your Financial overview.`}
         others={
           <div>
             <AddExpenseModal categories={categories} />

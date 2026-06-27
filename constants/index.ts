@@ -339,4 +339,4 @@ export const MONTHS = [
 
 export const WeekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
-
+export const CURRENCIES = ["INR", "USD", "EUR", "AED"] as const

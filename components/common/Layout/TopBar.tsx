@@ -1,16 +1,15 @@
-import { Bell, Menu, Search } from "lucide-react"
+import { Bell, Menu } from "lucide-react"
 import UserProfile from "../User/UserProfile"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import MobileSidebar from "./MobileSidebar"
-import IconInput from "../Input/IconInput"
-import SearchFilters from "../Filter/SearchFilters"
+import LogoutModal from "@/components/auth/Logout/LogoutModal"
 
 interface Props {
   toggleSidebar: () => void
+  userName: string
 }
 
-const TopBar = ({ toggleSidebar }: Props) => {
+const TopBar = ({ toggleSidebar, userName }: Props) => {
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-popover px-6 shadow-sm backdrop-blur">
       {/* Left */}
@@ -35,7 +34,8 @@ const TopBar = ({ toggleSidebar }: Props) => {
           <span className="absolute top-2 right-2 size-2 rounded-full bg-red-500" />
         </Button>
 
-        <UserProfile name="User" />
+        <UserProfile name={userName} />
+        <LogoutModal />
       </div>
     </header>
   )
